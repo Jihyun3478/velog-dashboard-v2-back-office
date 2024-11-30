@@ -22,6 +22,11 @@ poetry shell
 poetry install
 ```
 
+## Database Configuration
+#### 1. [dockerdocs](https://docs.docker.com/get-started/)를 참고하여 Docker, Docker Compose 설치
+#### 2. .env.sample의 형식으로 환경 변수 설정
+#### 3. ```docker-compose up -d```로 실행
+
 ## Run Test
 
 ### 1) unit testing

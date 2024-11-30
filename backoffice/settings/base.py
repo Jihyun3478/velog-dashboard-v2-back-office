@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "corsheaders",
     "django_extensions",
+    "users.apps.UsersConfig",
+    "posts.apps.PostsConfig",
 ]
 
 MIDDLEWARE = [
@@ -83,10 +85,7 @@ WSGI_APPLICATION = "backoffice.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": env.db_url(engine=env("DATABASE_ENGINE")),
 }
 
 # Password validation
