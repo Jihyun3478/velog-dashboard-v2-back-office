@@ -1,4 +1,4 @@
-name: Velog Dashboard Scraping
+name: Velog Dashboard - Daily Stats Batch
 
 on:
   workflow_dispatch:
@@ -59,7 +59,7 @@ jobs:
           echo "AES_KEY_8=${{ secrets.AES_KEY_8 }}" >> .env
           echo "AES_KEY_9=${{ secrets.AES_KEY_9 }}" >> .env
 
-      - name: Run Velog Scraping Script
+      - name: Run Velog Daily Stats Script
         id: velog-daily-stats-main
         timeout-minutes: 25
         run: |
