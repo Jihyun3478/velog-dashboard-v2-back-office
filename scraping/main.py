@@ -163,7 +163,7 @@ class Scraper:
     async def run(self) -> None:
         """스크래핑 작업 실행"""
         self.logger.info(
-            f"Start scraping velog posts and statistics. {self.get_local_now().isoformat()}"
+            f"Start scraping velog posts and statistics for group range({min(self.group_range)} ~ {max(self.group_range)}). {self.get_local_now().isoformat()}"
         )
         users: list[User] = [
             user
