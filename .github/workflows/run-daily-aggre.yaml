@@ -2,9 +2,9 @@ name: Velog Dashboard - Daily Stats Batch
 
 on:
   workflow_dispatch:
-  # schedule:
   # 30분 마다 동작
-  # - cron: "*/30 * * * *"
+  schedule:
+    - cron: "*/30 * * * *"
 
 jobs:
   velog-posts-daily-stats-batch:
@@ -66,6 +66,10 @@ jobs:
           set -e
           poetry run python scraping/main.py
 
+      # KST 시간을 GitHub Actions 환경 변수에 세팅
+      - name: Get Current KST Time
+        run: echo "KST_TIME=$(TZ=Asia/Seoul date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
       - name: Send Slack Notification on Success
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
@@ -78,7 +82,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp:* <!date^${{ github.event.repository.updated_at }}^{date_short_pretty} {time}|Timestamp>\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "*Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 }
               ]
@@ -98,7 +102,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp:* <!date^${{ github.event.repository.updated_at }}^{date_short_pretty} {time}|Timestamp>\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "*Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
                 }
               ]
