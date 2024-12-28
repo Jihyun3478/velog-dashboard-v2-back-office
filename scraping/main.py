@@ -101,12 +101,12 @@ class Scraper:
             date=today,
             defaults={
                 "daily_view_count": stats["data"]["getStats"]["total"],  # type: ignore
-                "daily_like_count": stats.get("like_count", 0),
+                "daily_like_count": post.get("likes", 0),
             },
         )
         if not created:
             daily_stats.daily_view_count = stats["data"]["getStats"]["total"]  # type: ignore
-            daily_stats.daily_like_count = stats.get("like_count", 0)
+            daily_stats.daily_like_count = post.get("likes", 0)
             await daily_stats.asave(
                 update_fields=["daily_view_count", "daily_like_count"]
             )
@@ -205,5 +205,8 @@ warnings.filterwarnings(
 )
 
 # 실행
+# TODO: Semaphore 로 asyncio.gather() 실행 제한 필요
+# TODO: await asyncio.sleep(delay) 와 같은 사용자 사이 딜레이 있으면 velog 쪽에서 좋아할 듯
+# TODO: return await asyncio.wait_for(task(*args), timeout=timeout) 와 같은 타임아웃이 필요
 if __name__ == "__main__":
     asyncio.run(main())
