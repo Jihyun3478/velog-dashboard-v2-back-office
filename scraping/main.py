@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import warnings
 from datetime import datetime
 
 import aiohttp
@@ -100,21 +101,23 @@ async def update_daily_statistics(
         date=today,
         defaults={
             "daily_view_count": stats["data"]["getStats"]["total"],  # type: ignore
-            # TODO: like count 가져올 수 있어야 함
-            "daily_like_count": stats.get("like_count", 0),
+            "daily_like_count": post.get("likes", 0),
         },
     )
     if not created:
         # 기존 통계를 업데이트
         daily_stats.daily_view_count = stats["data"]["getStats"]["total"]  # type: ignore
-        # TODO: like count 가져올 수 있어야 함
-        daily_stats.daily_like_count = stats.get("like_count", 0)
+        daily_stats.daily_like_count = post.get("likes", 0)
         await daily_stats.asave(
             update_fields=["daily_view_count", "daily_like_count"]
         )
 
 
 async def main() -> None:
+    logger.info(
+        f"Start scraping velog posts and statistics. {get_local_now().isoformat()}"
+    )
+
     # TODO: group별 batch job 실행 방식 확정 후 리팩토링
     users: list[User] = [user async for user in User.objects.all()]
     async with aiohttp.ClientSession() as session:
@@ -187,6 +190,20 @@ async def main() -> None:
             for post, stats in zip(fetched_posts, statistics_results):
                 if stats:  # 통계가 유효한 경우에만 업데이트
                     await update_daily_statistics(post, stats)
+
+            logger.info(
+                f"Succeeded to update {len(fetched_posts)} posts stats."
+                f"(user velog uuid: {user.velog_uuid}), email: {user.email}"
+            )
+
+
+# Django에서 발생하는 RuntimeWarning 무시
+# datetime 을 date 로 바꾸면서 timezone 을 적용하지 않은 것으로 착각해서 발생하는 warning, 무시
+warnings.filterwarnings(
+    "ignore",
+    message=r"DateTimeField .* received a naive datetime",
+    category=RuntimeWarning,
+)
 
 
 asyncio.run(main())

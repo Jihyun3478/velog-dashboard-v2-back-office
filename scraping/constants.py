@@ -8,6 +8,7 @@ VELOG_POSTS_QUERY: Final[str] = """
         posts(input: $input) {
             id
             title
+            likes
             released_at
         }
     }

@@ -152,24 +152,56 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {
-            "format": "{levelname} | {asctime} | {pathname} | {lineno} | {message}",
-            "style": "{",
+        "default_formatter": {
+            "format": '{"timestamp":"%(asctime)s","level":"%(levelname)s","logger":"%(name)s","module":"%(module)s","func":"%(funcName)s","line":%(lineno)d,"path":"%(pathname)s","process":%(process)d,"thread":%(thread)d,"message":"%(message)s"}',
+            "datefmt": "%Y-%m-%d %H:%M:%S.%f%z",
+            "style": "%",
         },
     },
     "handlers": {
-        "file": {
+        "django_console": {
             "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs") + "/scraping_log",
-            "formatter": "verbose",
+            "class": "logging.StreamHandler",
+            "formatter": "default_formatter",
+        },
+        "django_file": {
+            "level": "INFO",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "formatter": "default_formatter",
+            "encoding": "utf-8",
+            "filename": os.path.join(BASE_DIR, "logs", "django.log"),
+        },
+        "scraping_console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "default_formatter",
+        },
+        "scraping_file": {
+            "level": "INFO",
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "when": "midnight",
+            "interval": 1,
+            "backupCount": 7,
+            "formatter": "default_formatter",
+            "encoding": "utf-8",
+            "filename": os.path.join(BASE_DIR, "logs", "scraping.log"),
         },
     },
     "loggers": {
-        "scraping": {
-            "handlers": ["file"],
+        "django": {
+            "handlers": ["django_console", "django_file"],
             "level": "INFO",
-            "propagate": True,
+            "propagate": False,
+        },
+        "scraping": {
+            "handlers": ["scraping_console", "scraping_file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
+
+os.makedirs(os.path.join(BASE_DIR, "logs"), exist_ok=True)
