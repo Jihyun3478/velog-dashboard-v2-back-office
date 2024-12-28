@@ -160,10 +160,14 @@ class Scraper:
             if stats:
                 await self.update_daily_statistics(post, stats)
 
+        self.logger.info(
+            f"Succeeded to update tokens. (user velog uuid: {user.velog_uuid}, email: {user.email})"
+        )
+
     async def run(self) -> None:
         """스크래핑 작업 실행"""
         self.logger.info(
-            f"Start scraping velog posts and statistics for group range({min(self.group_range)} ~ {max(self.group_range)})."
+            f"Start scraping velog posts and statistics for group range ({min(self.group_range)} ~ {max(self.group_range)})."
             f"{self.get_local_now().isoformat()}"
         )
         users: list[User] = [
@@ -175,6 +179,10 @@ class Scraper:
         async with aiohttp.ClientSession() as session:
             for user in users:
                 await self.process_user(user, session)
+
+        self.logger.info(
+            f"Finished scraping for group range ({min(self.group_range)} ~ {max(self.group_range)})."
+        )
 
 
 async def main() -> None:
