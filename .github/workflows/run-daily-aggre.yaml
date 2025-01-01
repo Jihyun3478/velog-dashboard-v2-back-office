@@ -76,13 +76,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "✅ Velog Dashboard Daily Stats Batch Successful",
+              "text": "[${{ env.KST_TIME }}] ✅ Velog Dashboard Daily Stats Batch Successful",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "[${{ env.KST_TIME }}] *Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
                   }
                 }
               ]
@@ -96,13 +96,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "❌ Velog Dashboard Daily Stats Batch Failed",
+              "text": "[${{ env.KST_TIME }}] ❌ Velog Dashboard Daily Stats Batch Failed",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "[${{ env.KST_TIME }}] *Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
                   }
                 }
               ]
