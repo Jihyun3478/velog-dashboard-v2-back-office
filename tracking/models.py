@@ -9,10 +9,30 @@ from users.models import User
 class UserEventType(models.TextChoices):
     """사용자 이벤트 추적을 위한 이벤트 타입 META"""
 
-    LOGIN = "01", "로그인"  # 사용자 로그인 이벤트
-    POST_CLICK = "02", "포스트 클릭"  # 포스트 클릭 이벤트
-    POST_GRAPH_CLICK = "03", "포스트 그래프 클릭"  # 포스트 그래프 클릭 이벤트
-    EXIT = "04", "종료"  # 종료 이벤트
+    LOGIN = "11", "로그인 성공"  # 로그인 성공
+    NAVIGATE = "12", "페이지 이동"  # 페이지 이동 (헤더 클릭 등)
+    LOGOUT = "13", "로그아웃"  # 로그아웃
+    # 메인 페이지 - 통계 블록 열림/닫힘
+    SECTION_INTERACT_MAIN = (
+        "21",
+        "메인(통계 블록 열림/닫힘)",
+    )
+    # 메인 페이지 - 정렬(오름차순, 방식) 선택
+    SORT_INTERACT_MAIN = (
+        "22",
+        "메인(정렬 선택)",
+    )
+    # 메인 페이지 - 새로고침 버튼
+    REFRESH_INTERACT_MAIN = (
+        "23",
+        "메인(새로고침)",
+    )
+    # 리더보드 페이지 - 정렬 방식 선택
+    SORT_INTERACT_BOARD = (
+        "31",
+        "리더보드(정렬 선택)",
+    )
+
     NOTHING = "99", "nothing"  # 디폴트 값, 또는 임의 부여 값
 
 
@@ -35,6 +55,12 @@ class UserEventTracking(models.Model):
         on_delete=models.CASCADE,
         related_name="event_tracks",
         verbose_name="사용자",
+    )
+    request_header = models.JSONField(
+        null=True,
+        blank=True,
+        default=dict,
+        verbose_name="요청 헤더",
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
