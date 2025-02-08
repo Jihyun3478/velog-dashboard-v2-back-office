@@ -17,7 +17,7 @@ sleep 1
 gunicorn --workers 2 --bind 0.0.0.0:8000 --log-level=info \
     --log-file=./gunicorn.log --access-logfile=./gunicorn-access.log \
     --error-logfile=./gunicorn-error.log --max-requests=1200 \
-    --max-requests-jitter=100 config.wsgi:application --daemon
+    --max-requests-jitter=100 backoffice.wsgi:application --daemon
 
 sleep 1
 
