@@ -92,26 +92,58 @@ class Scraper:
         self, post: dict[str, str], stats: dict[str, str]
     ) -> None:
         """PostDailyStatistics를 업데이트 또는 생성 (upsert)"""
-        post_obj = await sync_to_async(Post.objects.get)(post_uuid=post["id"])
-        today = self.get_local_now().date()
-        (
-            daily_stats,
-            created,
-        ) = await PostDailyStatistics.objects.aget_or_create(
-            post=post_obj,
-            date=today,
-            defaults={
-                "daily_view_count": stats["data"]["getStats"]["total"],  # type: ignore
-                "daily_like_count": post.get("likes", 0),
-            },
-        )
-        if not created:
-            daily_stats.daily_view_count = stats["data"]["getStats"]["total"]  # type: ignore
-            daily_stats.daily_like_count = post.get("likes", 0)
-            daily_stats.updated_at = self.get_local_now()
-            await daily_stats.asave(
-                update_fields=["daily_view_count", "daily_like_count"]
+        if not stats or not isinstance(stats, dict):
+            self.logger.warning(
+                f"Skip updating statistics due to invalid stats data for post {post['id']}"
             )
+            return
+
+        try:
+            post_obj = await sync_to_async(Post.objects.get)(
+                post_uuid=post["id"]
+            )
+            today = self.get_local_now().date()
+
+            stats_data = stats.get("data", {})  # type: ignore
+            if not stats_data or not isinstance(
+                stats_data.get("getStats"),  # type: ignore
+                dict,
+            ):
+                self.logger.warning(
+                    f"Skip updating statistics due to missing getStats data for post {post['id']}"
+                )
+                return
+
+            view_count = stats_data["getStats"].get("total", 0)  # type: ignore
+            like_count = post.get("likes", 0)
+
+            (
+                daily_stats,
+                created,
+            ) = await PostDailyStatistics.objects.aget_or_create(
+                post=post_obj,
+                date=today,
+                defaults={
+                    "daily_view_count": view_count,
+                    "daily_like_count": like_count,
+                },
+            )
+            if not created:
+                daily_stats.daily_view_count = view_count
+                daily_stats.daily_like_count = like_count
+                daily_stats.updated_at = self.get_local_now()
+                await daily_stats.asave(
+                    update_fields=[
+                        "daily_view_count",
+                        "daily_like_count",
+                        "updated_at",
+                    ]
+                )
+        except Exception as e:
+            self.logger.error(
+                f"Failed to update daily statistics for post {post['id']}: {str(e)}"
+            )
+            return
 
     async def process_user(
         self, user: User, session: aiohttp.ClientSession
