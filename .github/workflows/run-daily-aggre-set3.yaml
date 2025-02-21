@@ -1,4 +1,4 @@
-name: Velog Dashboard - Daily Stats Batch (set2)
+name: Velog Dashboard - Daily Stats Batch (set3)
 
 on:
   workflow_dispatch:
