@@ -8,9 +8,10 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    platform: linux/arm64
     volumes:
       - timescale_data:/var/lib/postgresql/data
-    platform: linux/arm64
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   timescale_data:
