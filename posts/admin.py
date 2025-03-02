@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -10,7 +12,7 @@ class UserGroupRangeFilter(admin.SimpleListFilter):
     title = _("유저 그룹")
     parameter_name = "user__group_id"
 
-    def lookups(self, request, model_admin):
+    def lookups(self, request: HttpRequest, model_admin):
         """필터 옵션 정의 (10개 구간)"""
         return [
             ("1-100", "1~100"),
@@ -25,7 +27,7 @@ class UserGroupRangeFilter(admin.SimpleListFilter):
             ("901-1000", "901~1000"),
         ]
 
-    def queryset(self, request, queryset):
+    def queryset(self, request: HttpRequest, queryset: QuerySet[Post]):
         """선택한 필터에 맞게 queryset 필터링"""
         if self.value():
             start, end = map(int, self.value().split("-"))
@@ -52,7 +54,7 @@ class PostAdmin(admin.ModelAdmin):
         return super().get_queryset(request).select_related("user")
 
     @admin.display(description="사용자")
-    def user_link(self, obj):
+    def user_link(self, obj: Post):
         url = reverse("admin:users_user_change", args=[obj.user.id])
         return format_html(
             '<a target="_blank" href="{}" style="min-width: 80px; display: block;">{}</a>',
@@ -71,7 +73,7 @@ class PostDailyStatisticsAdmin(admin.ModelAdmin):
         "daily_like_count",
         "created_at",
     ]
-    list_filter = ["date", UserGroupRangeFilter]
+    list_filter = ["date"]
     search_fields = ["post__title", "post__user__id", "post__user__email"]
 
     def get_queryset(self, request):
@@ -81,7 +83,7 @@ class PostDailyStatisticsAdmin(admin.ModelAdmin):
         )
 
     @admin.display(description="게시글 제목")
-    def post_title(self, obj):
+    def post_title(self, obj: PostDailyStatistics):
         url = reverse("admin:posts_post_change", args=[obj.post.id])
         return format_html(
             '<a href="{}" target="_blank">{}</a>', url, obj.post.title
