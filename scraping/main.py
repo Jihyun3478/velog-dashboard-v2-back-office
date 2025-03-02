@@ -262,7 +262,8 @@ class Scraper:
             f"({min(self.group_range)} ~ {max(self.group_range)}) \n"
             f"{get_local_now().isoformat()}"
         )
-        users: list[User] = [
+
+        users = [
             user
             async for user in User.objects.filter(
                 group_id__in=self.group_range
@@ -295,7 +296,8 @@ class ScraperTargetUser(Scraper):
             f"({self.user_pk_list}) \n"
             f"{get_local_now().isoformat()}"
         )
-        users: list[User] = [
+
+        users = [
             user
             async for user in User.objects.filter(id__in=self.user_pk_list)
         ]
