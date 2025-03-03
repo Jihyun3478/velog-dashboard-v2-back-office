@@ -195,9 +195,12 @@ class Scraper:
             for attempt in range(3):  # 최대 3번 재시도
                 try:
                     async with async_timeout.timeout(5):  # 5초 타임아웃 설정
-                        return await fetch_post_stats(
+                        stats_results = await fetch_post_stats(
                             post_id, access_token, refresh_token
                         )
+                        if not stats_results:
+                            raise Exception("the stats_results is empty")
+                        return stats_results
                 except aiohttp.ClientError as e:
                     logger.warning(
                         f"Network error fetching post stats (attempt {attempt+1}/3): {e}"
@@ -206,7 +209,10 @@ class Scraper:
                     logger.warning(
                         f"Timeout fetching post stats (attempt {attempt+1}/3)"
                     )
-
+                except Exception as e:
+                    logger.warning(
+                        f"Unexpected error fetching post stats (attempt {attempt+1}/3) - {e}, {e.__class__}"
+                    )
                 await asyncio.sleep(2)  # 재시도 전에 대기
             return None  # 최종적으로 실패한 경우
 

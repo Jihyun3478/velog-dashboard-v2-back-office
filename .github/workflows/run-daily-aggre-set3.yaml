@@ -6,13 +6,13 @@ on:
       min_group:
         description: 'Minimum group number'
         required: true
-        default: '661'
+        default: '501'
       max_group:
         description: 'Maximum group number'
         required: true
-        default: '1000'
+        default: '750'
   schedule:
-    - cron: "0 * * * *"
+    - cron: "*/55 * * * *"
 
 jobs:
   velog-posts-daily-stats-batch:
@@ -69,10 +69,10 @@ jobs:
 
       - name: Run Velog Daily Stats Script
         id: velog-daily-stats-main
-        timeout-minutes: 58
+        timeout-minutes: 50
         run: |
           set -e
-          poetry run python scraping/aggregate_batch.py --min-group ${{ github.event.inputs.min_group || '661' }} --max-group ${{ github.event.inputs.max_group || '1000' }}
+          poetry run python scraping/aggregate_batch.py --min-group ${{ github.event.inputs.min_group || '501' }} --max-group ${{ github.event.inputs.max_group || '750' }}
 
       # KST 시간을 GitHub Actions 환경 변수에 세팅
       - name: Get Current KST Time
