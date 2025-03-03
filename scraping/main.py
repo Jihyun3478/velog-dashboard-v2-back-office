@@ -272,7 +272,7 @@ class Scraper:
             if update_tasks:
                 await asyncio.gather(*update_tasks)
 
-            # 선택적으로 처리 사이에 짧은 대기 시간 추가
+            # 처리 사이에 짧은 대기 시간 추가
             await asyncio.sleep(0.5)
 
         logger.info(
