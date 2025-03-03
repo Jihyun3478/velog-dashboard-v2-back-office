@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 import aiohttp
+import async_timeout
 import environ
 from asgiref.sync import sync_to_async
 from django.db import transaction
@@ -176,15 +177,38 @@ class Scraper:
             )
             return
 
+    # async def fetch_post_stats_limited(
+    #     self,
+    #     post_id: str,
+    #     access_token: str,
+    #     refresh_token: str,
+    # ) -> dict[str, str] | None:
+    #     """세마포어를 적용한 fetch_post_stats"""
+    #     async with self.semaphore:
+    #         return await fetch_post_stats(post_id, access_token, refresh_token)
+
     async def fetch_post_stats_limited(
-        self,
-        post_id: str,
-        access_token: str,
-        refresh_token: str,
+        self, post_id: str, access_token: str, refresh_token: str
     ) -> dict[str, str] | None:
-        """세마포어를 적용한 fetch_post_stats"""
+        """세마포어를 적용한 fetch_post_stats + 재시도 로직 추가"""
         async with self.semaphore:
-            return await fetch_post_stats(post_id, access_token, refresh_token)
+            for attempt in range(3):  # 최대 3번 재시도
+                try:
+                    async with async_timeout.timeout(5):  # 5초 타임아웃 설정
+                        return await fetch_post_stats(
+                            post_id, access_token, refresh_token
+                        )
+                except aiohttp.ClientError as e:
+                    logger.warning(
+                        f"Network error fetching post stats (attempt {attempt+1}/3): {e}"
+                    )
+                except asyncio.TimeoutError:
+                    logger.warning(
+                        f"Timeout fetching post stats (attempt {attempt+1}/3)"
+                    )
+
+                await asyncio.sleep(2)  # 재시도 전에 대기
+            return None  # 최종적으로 실패한 경우
 
     async def process_user(
         self, user: User, session: aiohttp.ClientSession
@@ -226,7 +250,7 @@ class Scraper:
         await self.bulk_insert_posts(user, fetched_posts)
 
         # 게시물을 적절한 크기의 청크로 나누어 처리
-        chunk_size = 40
+        chunk_size = 20
         for i in range(0, len(fetched_posts), chunk_size):
             chunk_posts = fetched_posts[i : i + chunk_size]
             tasks = [
