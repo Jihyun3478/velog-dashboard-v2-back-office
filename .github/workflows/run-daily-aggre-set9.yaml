@@ -1,4 +1,4 @@
-name: Velog Dashboard - Daily Stats Batch (set1)
+name: Velog Dashboard - Daily Stats Batch (set9)
 
 on:
   workflow_dispatch:
@@ -6,11 +6,11 @@ on:
       min_group:
         description: 'Minimum group number'
         required: true
-        default: '1'
+        default: '401'
       max_group:
         description: 'Maximum group number'
         required: true
-        default: '50'
+        default: '450'
   schedule:
     - cron: "*/50 * * * *"
 
@@ -72,7 +72,7 @@ jobs:
         timeout-minutes: 48
         run: |
           set -e
-          poetry run python scraping/aggregate_batch.py --min-group ${{ github.event.inputs.min_group || '1' }} --max-group ${{ github.event.inputs.max_group || '50' }}
+          poetry run python scraping/aggregate_batch.py --min-group ${{ github.event.inputs.min_group || '401' }} --max-group ${{ github.event.inputs.max_group || '450' }}
 
       # KST 시간을 GitHub Actions 환경 변수에 세팅
       - name: Get Current KST Time
@@ -84,7 +84,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "* (SET1) Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+              "text": "* (SET4) Velog Dashboard Daily Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -95,7 +95,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "* (SET1) Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+              "text": "* (SET3) Velog Dashboard Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
