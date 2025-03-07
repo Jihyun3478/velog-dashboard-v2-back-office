@@ -1,4 +1,4 @@
-name: Velog Dashboard - Daily Target Stats Batch
+name: Daily Target Stats Batch
 
 on:
   workflow_dispatch:
@@ -73,7 +73,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "* Velog Dashboard Daily Target Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+              "text": "* Daily Target Stats Batch*\n\n✅ *Status:* Success\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -84,7 +84,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "* (SET3) Velog Dashboard Daily Target Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+              "text": "* Daily Target Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
