@@ -1,6 +1,9 @@
 from .base import *  # noqa: F401, F403
 
-ALLOWED_HOSTS = ["admin-vd2.kro.kr"]
+ALLOWED_HOSTS = [
+    "admin-vd2.kro.kr",
+    "134.185.98.129",  # 서버쪽 IP
+]
 
 DEBUG = False
 
