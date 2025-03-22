@@ -6,7 +6,7 @@ from django.db.models import Count, QuerySet
 from django.http import HttpRequest
 
 from scraping.main import ScraperTargetUser
-from users.models import User
+from users.models import QRLoginToken, User
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,9 @@ class UserAdmin(admin.ModelAdmin):
         "is_active",
         "created_at",
         "post_count",
+        "get_qr_login_token",
+        "get_qr_expires_at",
+        "get_qr_is_used",
     ]
 
     empty_value_display = "-"
@@ -39,9 +42,32 @@ class UserAdmin(admin.ModelAdmin):
         }
         return list_display
 
+    def get_qr_login_token(self, obj: User):
+        """사용자의 최신 QR 로그인 토큰 값"""
+        latest_token = obj.qr_login_tokens.order_by("-expires_at").first()
+        return latest_token.token if latest_token else "-"
+
+    get_qr_login_token.short_description = "QR 토큰"
+
+    def get_qr_expires_at(self, obj: User):
+        """사용자의 최신 QR 로그인 토큰 만료 시간"""
+        latest_token = obj.qr_login_tokens.order_by("-expires_at").first()
+        return latest_token.expires_at if latest_token else "-"
+
+    get_qr_expires_at.short_description = "QR 만료 시간"
+
+    def get_qr_is_used(self, obj: User):
+        """사용자의 최신 QR 로그인 토큰 사용 여부"""
+        latest_token = obj.qr_login_tokens.order_by("-expires_at").first()
+        return "사용" if latest_token and latest_token.is_used else "미사용"
+
+    get_qr_is_used.short_description = "QR 사용 여부"
+
     def get_queryset(self, request: HttpRequest):
         qs = super().get_queryset(request)
-        return qs.annotate(post_count=Count("posts"))
+        return qs.annotate(post_count=Count("posts")).prefetch_related(
+            "qr_login_tokens"
+        )
 
     @admin.display(description="유저당 게시글 수")
     def post_count(self, obj: User):
@@ -90,3 +116,33 @@ class UserAdmin(admin.ModelAdmin):
             f"{len(user_pk_list)} 명의 사용자 통계를 실시간 업데이트 성공했습니다.",
             messages.SUCCESS,
         )
+
+
+@admin.register(QRLoginToken)
+class QRLoginTokenAdmin(admin.ModelAdmin):
+    list_display = (
+        "token",
+        "user",
+        "created_at",
+        "expires_at",
+        "is_used",
+        "ip_address",
+        "user_agent",
+    )
+    list_filter = ("is_used", "expires_at", "user")
+    search_fields = ("token", "ip_address")
+    ordering = ("-id",)
+    readonly_fields = ("token", "created_at")
+    actions = ["make_used", "make_unused"]
+
+    def make_used(self, request, queryset):
+        """선택한 QR 로그인 토큰을 '사용됨' 상태로 변경"""
+        queryset.update(is_used=True)
+
+    make_used.short_description = "선택된 QR 로그인 토큰을 사용 처리"
+
+    def make_unused(self, request, queryset):
+        """선택한 QR 로그인 토큰을 '미사용' 상태로 변경"""
+        queryset.update(is_used=False)
+
+    make_unused.short_description = "선택된 QR 로그인 토큰을 미사용 처리"
