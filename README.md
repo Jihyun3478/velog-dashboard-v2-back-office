@@ -4,10 +4,13 @@ Velog-Dashboard v2의 데이터, 스크래핑, 백오피스용 레포지토리�
 
 ## Requirements
 
-- Python 3.13.0
-- Poetry 1.8.4
+- Python 3.13.0+
+- Poetry 1.8.4+
 
 ## Installation
+
+- `pyenv` 와 `poetry` 가 설치되었다고 가정하고 진행합니다.
+- `poetry` 대신 `venv` 로 대체해서 사용가능합니다. (`requirements.txt` 활용)
 
 ```bash
 # 프로젝트 Clone 및 이동
@@ -63,9 +66,9 @@ python manage.py createsuperuser --noinput
 ### 1) unit testing
 
 ```bash
-poetry run pytest -v
+poetry run pytest -v  # 또는 pytest -v
 # 또는 아주 상세 디버깅을 위해
-poetry run pytest -v --full-trace --showlocals --tb=long --capture=no
+poetry run pytest -v --full-trace --showlocals --tb=long --capture=no  # 또는 pytest 이후부터 쭉
 ```
 
 - `conftest.py` 파일은 `pytest` 을 위한 자동 `fixture` 세팅 파일임

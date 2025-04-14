@@ -22,6 +22,13 @@ class Post(TimeStampedModel):
     title = models.CharField(
         blank=False, null=False, max_length=255, verbose_name="제목"
     )
+    is_active = models.BooleanField(
+        blank=False,
+        null=False,
+        default=True,
+        verbose_name="활성화 여부",
+        help_text="게시글 활성화 여부, 삭제된 게시글의 soft delete에 사용합니다.",
+    )
     slug = models.CharField(
         blank=True,
         null=True,
