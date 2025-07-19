@@ -1,21 +1,12 @@
-name: Daily Stats Batch (set7)
+name: Weekly Analysis Batch
 
 on:
   workflow_dispatch:
-    inputs:
-      min_group:
-        description: 'Minimum group number'
-        required: true
-        default: '301'
-      max_group:
-        description: 'Maximum group number'
-        required: true
-        default: '350'
-  schedule:
-    - cron: "*/50 * * * *"
+  # schedule:
+  #   - cron: "*/50 * * * *"
 
 jobs:
-  velog-posts-daily-stats-batch:
+  weekly-trend-analysis-batch:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.13.0
 
@@ -66,13 +57,21 @@ jobs:
           echo "AES_KEY_7=${{ secrets.AES_KEY_7 }}" >> .env
           echo "AES_KEY_8=${{ secrets.AES_KEY_8 }}" >> .env
           echo "AES_KEY_9=${{ secrets.AES_KEY_9 }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
-      - name: Run Velog Daily Stats Script
-        id: velog-daily-stats-main
-        timeout-minutes: 48
+      - name: Run Weekly Trend Analysis Batch Script
+        id: weekly-trend-analysis-main
+        timeout-minutes: 10
         run: |
           set -e
-          poetry run python scraping/aggregate_batch.py --min-group ${{ github.event.inputs.min_group || '301' }} --max-group ${{ github.event.inputs.max_group || '350' }}
+          poetry run python ./insight/tasks/weekly_trend_analysis.py
+
+      - name: Run Weekly User Trend Analysis Batch Script
+        id: weekly-user-trend-analysis-main
+        timeout-minutes: 40
+        run: |
+          set -e
+          poetry run python ./insight/tasks/weekly_user_trend_analysis.py
 
       # KST 시간을 GitHub Actions 환경 변수에 세팅
       - name: Get Current KST Time
@@ -84,7 +83,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "* (SET7) Daily Stats Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+              "text": "*Weekly Analysis Batch*\n\n❌ *Status:* Failure\n📅 *Timestamp (KST):* ${{ env.KST_TIME }}\n🔗 *Workflow URL:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
