@@ -28,25 +28,25 @@
         color: #000000;
         margin: 0;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 500;
         line-height: 20px;
         letter-spacing: 0;
       "
     >
       저번 주에는
-      <span style="text-decoration: underline"
+      <span style="text-decoration: underline; font-weight: 700"
         >{{insight.user_weekly_stats.new_posts}}개의 글</span
       >을 작성하셨네요!<br />
       👏 지난 한 주간
-      <span style="text-decoration: underline"
+      <span style="text-decoration: underline; font-weight: 700"
         >{{insight.user_weekly_stats.views}}명</span
       >이 {% if user.username %}{{user.username}}님의{% else %}{% endif %}
       포스트를 읽었어요.<br />
       그리고
-      <span style="text-decoration: underline"
+      <span style="text-decoration: underline; font-weight: 700"
         >{{insight.user_weekly_stats.likes}}개의 좋아요</span
       >를 받았어요.
-      <span style="color: #acacac; font-size: 12px"
+      <span style="color: #acacac; font-size: 12px; font-weight: 700"
         >* 이번 주에 신규 가입을 하셨다면 총 누적 조회수로 계산됩니다.</span
       >
     </p>
