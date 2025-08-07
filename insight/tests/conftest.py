@@ -1,6 +1,7 @@
 import sys
 import uuid
-from unittest.mock import MagicMock
+from datetime import datetime
+from unittest.mock import MagicMock, AsyncMock
 
 import pytest
 from django.conf import settings
@@ -240,3 +241,40 @@ def empty_insight_weekly_trend(db):
     return WeeklyTrend.objects.create(
         week_start_date=week_start, week_end_date=week_end, insight={}
     )
+
+@pytest.fixture
+def mock_post():
+    """테스트용 게시글 목록 응답 (get_trending_posts 용)"""
+    return MagicMock(
+        id="abc123",
+        title="test title",
+        views=100,
+        likes=10,
+        user=MagicMock(username="tester"),
+        thumbnail="thumbnail",
+        url_slug="test",
+    )
+
+@pytest.fixture
+def mock_post_detail():
+    """테스트용 게시글 본문 응답 (get_post 용)"""
+    return MagicMock(body="test content")
+
+@pytest.fixture
+def mock_context(mock_post, mock_post_detail):
+    """VelogClient 및 날짜 mock을 포함한 컨텍스트"""
+    mock_velog_client = AsyncMock()
+    mock_velog_client.get_trending_posts.return_value = [mock_post]
+    mock_velog_client.get_post.return_value = mock_post_detail
+
+    mock_context = MagicMock()
+    mock_context.velog_client = mock_velog_client
+    mock_context.week_start.date.return_value = "2025-07-21"
+    mock_context.week_end.date.return_value = "2025-07-27"
+    mock_context.week_end = datetime(2025, 7, 27)
+    return mock_context
+
+@pytest.fixture
+def trending_post_data(mock_post, mock_post_detail):
+    from insight.tasks.weekly_trend_analysis import TrendingPostData
+    return TrendingPostData(post=mock_post, body=mock_post_detail.body)
