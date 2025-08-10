@@ -1,365 +1,178 @@
-<div class="user-weekly-trend" style="margin-top: 40px; color: #000000">
-  {% if insight.trending_summary or insight.user_weekly_stats or
-  insight.user_weekly_reminder %}
-  <h2
-    style="
-      margin-bottom: 20px;
-      color: #000000;
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: 0;
-    "
-  >
-    {% if user.username %} {{user.username}}님의 활동 리포트 {% else %} 활동
-    리포트 {% endif %}
-  </h2>
-  {% endif %} {% if insight.user_weekly_stats %}
-  <div
-    style="
-      background-color: #f7f7f7;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
-    "
-  >
-    {% if insight.user_weekly_stats.new_posts > 0 %}
-    <p
-      style="
-        color: #000000;
-        margin: 0;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 20px;
-        letter-spacing: 0;
-      "
-    >
-      저번 주에는
-      <span style="text-decoration: underline; font-weight: 700"
-        >{{insight.user_weekly_stats.new_posts}}개의 글</span
-      >을 작성하셨네요!<br />
-      👏 지난 한 주간
-      <span style="text-decoration: underline; font-weight: 700"
-        >{{insight.user_weekly_stats.views}}명</span
-      >이 {% if user.username %}{{user.username}}님의{% else %}{% endif %}
-      포스트를 읽었어요.<br />
-      그리고
-      <span style="text-decoration: underline; font-weight: 700"
-        >{{insight.user_weekly_stats.likes}}개의 좋아요</span
-      >를 받았어요.
-      <span style="color: #acacac; font-size: 12px; font-weight: 700"
-        >* 이번 주에 신규 가입을 하셨다면 총 누적 조회수로 계산됩니다.</span
-      >
-    </p>
-    {% endif %}
-  </div>
-  {% if insight.user_weekly_reminder %}
-  <div
-    style="
-      background-color: #fffbd7;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
-    "
-  >
-    {% if insight.user_weekly_reminder.days_ago %}
-    <!-- 오래된 포스트 케이스 -->
-    <p
-      style="
-        color: #000000;
-        margin: 0 0 10px 0;
-        font-size: 16px;
-        font-weight: 700;
-        line-height: 20px;
-        letter-spacing: 0;
-      "
-    >
-      😭 마지막으로 글을 작성하신지
-      {{insight.user_weekly_reminder.days_ago}}일이 지났어요!
-    </p>
-    <p
-      style="
-        color: #999999;
-        margin: 0;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 20px;
-        letter-spacing: 0;
-      "
-    >
-      {% if insight.user_weekly_reminder.title %} 지난번엔
-      "{{insight.user_weekly_reminder.title}}" (이)라는 제목의 글을
-      작성하셨네요!<br />
-      {% endif %} 다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
-      다음주엔 꼭 분석해드리고 싶네요! 화이팅! 💪<br /><br />TIP:
-      <a
-        href="https://velog-dashboard.kro.kr/leaderboards?based=post&sort=viewCount&limit=10&dateRange=30&utm_source=email&utm_medium=weekly_analysis"
-        style="color: #999999; font-weight: bold; text-decoration: underline"
-        >리더보드</a
-      >에서 인기 글을 참고해 작성해보시는 건 어떨까요?
-    </p>
-    {% else %}
-    <p
-      style="
-        color: #000000;
-        margin: 0 0 10px 0;
-        font-size: 16px;
-        font-weight: 700;
-        line-height: 20px;
-        letter-spacing: 0;
-      "
-    >
-      😭 작성하신 글이 없어 통계를 분석할 수 없었어요!
-    </p>
-    <p
-      style="
-        color: #999999;
-        margin: 0;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 20px;
-        letter-spacing: 0;
-      "
-    >
-      다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
-      다음 주엔 꼭 분석해드리고 싶네요! 화이팅! 💪<br /><br />TIP:
-      <a
-        href="https://velog-dashboard.kro.kr/leaderboards?based=post&sort=viewCount&limit=10&dateRange=30&utm_source=email&utm_medium=weekly_analysis"
-        style="color: #999999; font-weight: bold; text-decoration: underline"
-        >리더보드</a
-      >에서 인기 글을 참고해 작성해보시는 건 어떨까요?
-    </p>
-    {% endif %}
-  </div>
-  {% endif %} {% if insight.trending_summary %}
-  <h3
-    style="
-      margin: 30px 0 20px 0;
-      color: #000000;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0;
-    "
-  >
-    이번 주에 작성한 글
-  </h3>
-  {% for item in insight.trending_summary %}
-  <div
-    style="
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 8px;
-      background-color: #f7f7f7;
-    "
-  >
-    <div style="display: flex; gap: 20px; align-items: center">
-      {% if item.thumbnail %}
-      <div
-        style="
-          flex-shrink: 0;
-          width: 100px;
-          height: 100px;
-          overflow: hidden;
-          border-radius: 6.4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <img
-          src="{{item.thumbnail}}"
-          alt="{{item.title}}"
-          style="width: 100%; height: 100%; object-fit: cover"
-        />
-      </div>
+<div 
+  class="user-weekly-trend" 
+  style="box-sizing: border-box; margin-top: 40px; color: #000000"
+>
+
+  {% if insight.trending_summary or insight.user_weekly_stats or insight.user_weekly_reminder %}
+    <h2 style="box-sizing: border-box; margin-bottom: 24px; color: #000000; font-size: 24px; font-weight: 900; letter-spacing: 0;">
+      {% if user.username %}
+        {{user.username}}님의 활동 리포트
+      {% else %}
+        활동 리포트
       {% endif %}
-      <div style="flex: 1; min-width: 0">
-        <h4
-          style="
-            margin: 0 0 6px 0;
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 19.2px;
-            color: #000000;
-            letter-spacing: 0;
-          "
-        >
-          <a
-            href="https://velog.io/@{{item.username}}/{{item.slug}}?utm_source=velog_dashboard_email&utm_medium=weekly_analysis"
-            target="_blank"
-            style="color: #000000; text-decoration: none"
-          >
-            {{ item.title }}
-          </a>
-        </h4>
-        {% if item.username and item.key_points %}
-        <p
-          style="
-            margin: 0 0 6px 0;
-            font-size: 12px;
-            font-weight: 500;
-            color: #acacac;
-            letter-spacing: 0;
-            line-height: 14.4px;
-          "
-        >
-          @{{item.username}} | {{ item.key_points|join:", " }}
+    </h2>
+  {% endif %}
+
+  {% if insight.user_weekly_stats %}
+    <div style="box-sizing: border-box; background-color: #f7f7f7; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      {% if insight.user_weekly_stats.new_posts > 0 %}
+        <p style="box-sizing: border-box; color: #000000; margin: 0; font-size: 13px; font-weight: 500; line-height: 20px; letter-spacing: 0;">
+          저번 주에는 
+          <span style="box-sizing: border-box; text-decoration: underline; font-weight: 700">
+            {{insight.user_weekly_stats.new_posts}}개의 글
+          </span>
+          을 작성하셨네요!<br />
+          👏 지난 한 주간 
+          <span style="box-sizing: border-box; text-decoration: underline; font-weight: 700">
+            {{insight.user_weekly_stats.views}}명
+          </span>
+          이 
+          {% if user.username %}
+            {{user.username}}님의
+          {% endif %}
+          포스트를 읽었어요.<br />
+          그리고
+          <span style="box-sizing: border-box; text-decoration: underline; font-weight: 700">
+            {{insight.user_weekly_stats.likes}}개의 좋아요
+          </span>
+          를 받았어요.
+          <span style="box-sizing: border-box; color: #acacac; font-size: 12px; font-weight: 700">
+            * 이번 주에 신규 가입을 하셨다면 총 누적 조회수로 계산됩니다.
+          </span>
         </p>
-        {% elif item.username %}
-        <p
-          style="
-            margin: 0 0 6px 0;
-            font-size: 12px;
-            font-weight: 500;
-            color: #acacac;
-            letter-spacing: 0;
-            line-height: 14.4px;
-          "
-        >
-          @{{item.username}}
-        </p>
-        {% elif item.key_points %}
-        <p
-          style="
-            margin: 0 0 6px 0;
-            font-size: 12px;
-            font-weight: 500;
-            color: #acacac;
-            letter-spacing: 0;
-            line-height: 14.4px;
-          "
-        >
-          📌 {{ item.key_points|join:", " }}
-        </p>
-        {% endif %}
-        <p
-          style="
-            margin: 0;
-            font-size: 13px;
-            font-weight: 500;
-            color: #999999;
-            line-height: 15.6px;
-            letter-spacing: 0;
-          "
-        >
-          {{ item.summary }}
-        </p>
-      </div>
+      {% endif %}
     </div>
-  </div>
-  {% endfor %} {% endif %} {% if insight.trend_analysis %}
-  <div style="margin-top: 40px">
-    <h3
-      style="
-        margin: 0 0 20px 0;
-        color: #000000;
-        font-size: 20px;
-        font-weight: 700;
-        letter-spacing: 0;
-      "
-    >
-      주간 내 활동 분석
+  {% endif %}
+
+  {% if insight.user_weekly_reminder %}
+    <div style="box-sizing: border-box; background-color: #fffbd7; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      {% if insight.user_weekly_reminder.days_ago %}
+        <!-- 오래된 포스트 케이스 -->
+        <p style="box-sizing: border-box; color: #000000; margin: 0 0 10px 0; font-size: 16px; font-weight: 700; line-height: 20px; letter-spacing: 0;">
+          😭 마지막으로 글을 작성하신지 {{insight.user_weekly_reminder.days_ago}}일이 지났어요!
+        </p>
+        <p style="box-sizing: border-box; color: #999999; margin: 0; font-size: 13px; font-weight: 500; line-height: 20px; letter-spacing: 0;">
+          {% if insight.user_weekly_reminder.title %}
+            지난번엔 "{{insight.user_weekly_reminder.title}}" (이)라는 제목의 글을 작성하셨네요!<br />
+          {% endif %}
+          다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
+          다음주엔 꼭 분석해드리고 싶네요! 화이팅! 💪<br />
+          <br />
+          TIP:
+          <a
+            href="https://velog-dashboard.kro.kr/leaderboards?based=post&sort=viewCount&limit=10&dateRange=30&utm_source=email&utm_medium=weekly_analysis"
+            style="box-sizing: border-box; color: #999999; font-weight: bold; text-decoration: underline"
+          >
+            리더보드
+          </a>
+          에서 인기 글을 참고해 작성해보시는 건 어떨까요?
+        </p>
+      {% else %}
+        <p style="box-sizing: border-box; color: #000000; margin: 0 0 10px 0; font-size: 16px; font-weight: 700; line-height: 20px; letter-spacing: 0;">
+          😭 글을 작성하지 않으셨네요!
+        </p>
+        <p style="box-sizing: border-box; color: #999999; margin: 0; font-size: 13px; font-weight: 500; line-height: 20px; letter-spacing: 0;">
+          다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
+          다음 주엔 꼭 분석해드리고 싶네요! 화이팅! 💪<br />
+          <br />
+          TIP:
+          <a
+            href="https://velog-dashboard.kro.kr/leaderboards?based=post&sort=viewCount&limit=10&dateRange=30&utm_source=email&utm_medium=weekly_analysis"
+            style="box-sizing: border-box; color: #999999; font-weight: bold; text-decoration: underline"
+          >
+            리더보드
+          </a>
+          에서 인기 글을 참고해 작성해보시는 건 어떨까요?
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if insight.trending_summary %}
+    <h3 style="box-sizing: border-box; margin: 30px 0 20px 0; color: #000000; font-size: 20px; font-weight: 800; letter-spacing: 0;">
+      이번주에 작성한 글
     </h3>
-    {% if insight.trend_analysis.hot_keywords %}
-    <h4
-      style="
-        color: #000000;
-        margin: 10px 0 6px 0;
-        line-height: 19.2px;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0;
-      "
-    >
-      🔑 내 기술 키워드
-    </h4>
-    <p
-      style="
-        margin: 0 0 20px 0;
-        color: #000000;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 15.6px;
-        letter-spacing: 0;
-      "
-    >
-      {{ insight.trend_analysis.hot_keywords|join:", " }}
-    </p>
-    {% endif %} {% if insight.trend_analysis.title_trends %}
-    <h4
-      style="
-        color: #000000;
-        margin: 10px 0 6px 0;
-        line-height: 19.2px;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0;
-      "
-    >
-      📋 제목 분석
-    </h4>
-    <p
-      style="
-        margin: 0 0 20px 0;
-        color: #000000;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 15.6px;
-        letter-spacing: 0;
-      "
-    >
-      {{ insight.trend_analysis.title_trends }}
-    </p>
-    {% endif %} {% if insight.trend_analysis.content_trends %}
-    <h4
-      style="
-        color: #000000;
-        margin: 10px 0 6px 0;
-        line-height: 19.2px;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0;
-      "
-    >
-      📦 콘텐츠 분석
-    </h4>
-    <p
-      style="
-        margin: 0 0 20px 0;
-        color: #000000;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 15.6px;
-        letter-spacing: 0;
-      "
-    >
-      {{ insight.trend_analysis.content_trends }}
-    </p>
-    {% endif %} {% if insight.trend_analysis.insights %}
-    <h4
-      style="
-        color: #000000;
-        margin: 10px 0 6px 0;
-        line-height: 19.2px;
-        font-size: 16px;
-        font-weight: 700;
-        letter-spacing: 0;
-      "
-    >
-      💡 인사이트
-    </h4>
-    <p
-      style="
-        margin: 0 0 20px 0;
-        color: #000000;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 15.6px;
-        letter-spacing: 0;
-      "
-    >
-      {{ insight.trend_analysis.insights }}
-    </p>
-    {% endif %}
-  </div>
+    {% for item in insight.trending_summary %}
+      <div style="box-sizing: border-box; margin: 20px 0; padding: 20px; border-radius: 8px; background-color: #f7f7f7;">
+        <div style="box-sizing: border-box; display: flex; gap: 20px; align-items: center">
+          {% if item.thumbnail %}
+            <div style="box-sizing: border-box; flex-shrink: 0; width: 100px; height: 100px; overflow: hidden; border-radius: 6.4px; display: flex; align-items: center; justify-content: center;">
+              <img
+                src="{{item.thumbnail}}"
+                alt="{{item.title}}"
+                style="box-sizing: border-box; width: 100%; height: 100%; object-fit: cover"
+              />
+            </div>
+          {% endif %}
+          <div style="box-sizing: border-box; flex: 1; min-width: 0">
+            <h4 style="box-sizing: border-box; margin: 0 0 6px 0; font-size: 16px; font-weight: 700; line-height: 19.2px; color: #000000; letter-spacing: 0;">
+              <a
+                href="https://velog.io/@{{item.username}}/{{item.slug}}?utm_source=velog_dashboard_email&utm_medium=weekly_analysis"
+                target="_blank"
+                style="box-sizing: border-box; color: #000000; text-decoration: none"
+              >
+                {{ item.title }}
+              </a>
+            </h4>
+            {% if item.username and item.key_points %}
+              <p style="box-sizing: border-box; margin: 0 0 6px 0; font-size: 13px; font-weight: 700; color: #acacac; letter-spacing: 0; line-height: 14.4px;">
+                @{{item.username}} | {{ item.key_points|join:", " }}
+              </p>
+            {% elif item.username %}
+              <p style="box-sizing: border-box; margin: 0 0 6px 0; font-size: 13px; font-weight: 700; color: #acacac; letter-spacing: 0; line-height: 14.4px;">
+                @{{item.username}}
+              </p>
+            {% elif item.key_points %}
+              <p style="box-sizing: border-box; margin: 0 0 6px 0; font-size: 13px; font-weight: 700; color: #acacac; letter-spacing: 0; line-height: 14.4px;">
+                📌 {{ item.key_points|join:", " }}
+              </p>
+            {% endif %}
+            <p style="box-sizing: border-box; margin: 0; font-size: 13px; font-weight: 500; color: #999999; line-height: 15.6px; letter-spacing: 0;">
+              {{ item.summary }}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if insight.trend_analysis %}
+    <div style="box-sizing: border-box; margin-top: 40px;">
+      <h3 style="box-sizing: border-box; margin: 0 0 20px 0; color: #000000; font-size: 20px; font-weight: 800; letter-spacing: 0;">
+        주간 내 활동 분석
+      </h3>
+      {% if insight.trend_analysis.hot_keywords %}
+        <h4 style="box-sizing: border-box; color: #000000; margin: 10px 0 6px 0; line-height: 19.2px; font-size: 16px; font-weight: 700; letter-spacing: 0;">
+          🔑 내 기술 키워드
+        </h4>
+        <p style="box-sizing: border-box; margin: 0 0 20px 0; color: #000000; font-size: 13px; font-weight: 500; line-height: 15.6px; letter-spacing: 0;">
+          {{ insight.trend_analysis.hot_keywords|join:", " }}
+        </p>
+      {% endif %}
+      {% if insight.trend_analysis.title_trends %}
+        <h4 style="box-sizing: border-box; color: #000000; margin: 10px 0 6px 0; line-height: 19.2px; font-size: 16px; font-weight: 700; letter-spacing: 0;">
+          📋 제목 분석
+        </h4>
+        <p style="box-sizing: border-box; margin: 0 0 20px 0; color: #000000; font-size: 13px; font-weight: 500; line-height: 15.6px; letter-spacing: 0;">
+          {{ insight.trend_analysis.title_trends }}
+        </p>
+      {% endif %}
+      {% if insight.trend_analysis.content_trends %}
+        <h4 style="box-sizing: border-box; color: #000000; margin: 10px 0 6px 0; line-height: 19.2px; font-size: 16px;font-weight: 700; letter-spacing: 0;">
+          📦 콘텐츠 분석
+        </h4>
+        <p style="box-sizing: border-box; margin: 0 0 20px 0; color: #000000; font-size: 13px; font-weight: 500; line-height: 15.6px; letter-spacing: 0;">
+          {{ insight.trend_analysis.content_trends }}
+        </p>
+      {% endif %}
+      {% if insight.trend_analysis.insights %}
+        <h4 style="box-sizing: border-box; color: #000000; margin: 10px 0 6px 0; line-height: 19.2px; font-size: 16px; font-weight: 700; letter-spacing: 0;">
+          💡 인사이트
+        </h4>
+        <p style="box-sizing: border-box; margin: 0 0 20px 0; color: #000000; font-size: 13px; font-weight: 500; line-height: 15.6px; letter-spacing: 0;">
+          {{ insight.trend_analysis.insights }}
+        </p>
+      {% endif %}
+    </div>
   {% endif %}
 </div>
