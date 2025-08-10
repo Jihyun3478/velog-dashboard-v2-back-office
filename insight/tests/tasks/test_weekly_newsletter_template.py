@@ -61,8 +61,9 @@ class TestWeeklyNewsletterTemplate:
 
             assert trending_summary[0]["title"] in weekly_trend_html
             assert trend_analysis["insights"] in weekly_trend_html
-            assert "이 주의 트렌딩 글" in weekly_trend_html
-            assert "트렌드 분석" in weekly_trend_html
+            assert "벨로그 주간 트렌드" in weekly_trend_html
+            assert "이번 주의 트렌딩 글" in weekly_trend_html
+            assert "주간 트렌드 분석" in weekly_trend_html
 
     @patch("insight.tasks.weekly_newsletter_batch.logger")
     @pytest.mark.django_db
@@ -124,12 +125,11 @@ class TestWeeklyNewsletterTemplate:
 
         assert trending_summary[0]["title"] in user_weekly_trend_html
         assert trend_analysis["insights"] in user_weekly_trend_html
-        assert (
-            f'<b>{user_weekly_stats["new_posts"]}개</b>의 글을 작성'
-            in user_weekly_trend_html
-        )
+        assert f'{user_weekly_stats["new_posts"]}개의 글' in user_weekly_trend_html
         assert "마지막으로 글을 작성하신지" not in user_weekly_trend_html
         assert user.username in user_weekly_trend_html
+        assert "이번주에 작성한 글" in user_weekly_trend_html
+        assert "주간 내 활동 분석" in user_weekly_trend_html
 
     @patch("insight.tasks.weekly_newsletter_batch.logger")
     def test_get_user_weekly_trend_html_inactive_user(
@@ -147,13 +147,16 @@ class TestWeeklyNewsletterTemplate:
         insight_data = inactive_user_weekly_trend.insight
         user_weekly_reminder = insight_data.get("user_weekly_reminder")
 
-        assert "이번주에 쓴 글" not in user_weekly_trend_html
-        assert "내 글을 분석해보면?" not in user_weekly_trend_html
-        assert "글을 작성하지 않으셨네요" in user_weekly_trend_html
-        assert (
-            f'마지막으로 글을 작성하신지 {user_weekly_reminder["days_ago"]}일이 지났어요'
-            in user_weekly_trend_html
-        )
+        assert "이번주에 작성한 글" not in user_weekly_trend_html
+        assert "주간 내 활동 분석" not in user_weekly_trend_html
+        # days_ago가 있는 경우와 없는 경우 모두 처리
+        if user_weekly_reminder.get("days_ago"):
+            assert (
+                f'😭 마지막으로 글을 작성하신지 {user_weekly_reminder["days_ago"]}일이 지났어요!'
+                in user_weekly_trend_html
+            )
+        else:
+            assert "😭 글을 작성하지 않으셨네요!" in user_weekly_trend_html
 
     @patch("insight.tasks.weekly_newsletter_batch.logger")
     def test_get_user_weekly_trend_html_exception(
@@ -193,6 +196,8 @@ class TestWeeklyNewsletterTemplate:
         assert weekly_trend_html in newsletter_html
         assert user_weekly_trend_html in newsletter_html
         assert "대시보드 보러가기" in newsletter_html
+        assert "Weekly Report" in newsletter_html
+        assert "Velog Dashboard" in newsletter_html
 
     @patch("insight.tasks.weekly_newsletter_batch.logger")
     def test_get_newsletter_html_expired_token_user(
@@ -210,10 +215,12 @@ class TestWeeklyNewsletterTemplate:
         )
 
         # 템플릿 렌더링 검증
-        assert "토큰이 만료" in newsletter_html
+        assert "🚨 잠시만요, 토큰이 만료된 것 같아요!" in newsletter_html
+        assert "토큰이 만료되어 정상적으로 통계를 수집할 수 없었어요" in newsletter_html
         assert weekly_trend_html in newsletter_html
         assert user_weekly_trend_html not in newsletter_html
         assert "대시보드 보러가기" in newsletter_html
+        assert "활동 리포트" in newsletter_html
 
     @patch("insight.tasks.weekly_newsletter_batch.logger")
     def test_get_newsletter_html_exception(
