@@ -145,8 +145,8 @@ class WeeklyNewsletterBatch:
 
             # 템플릿 렌더링이 제대로 되지 않은 경우 배치 종료
             if (
-                "이 주의 트렌딩 글" not in weekly_trend_html
-                or "트렌드 분석" not in weekly_trend_html
+                "이번 주의 트렌딩 글" not in weekly_trend_html
+                or "주간 트렌드 분석" not in weekly_trend_html
             ):
                 logger.error(
                     f"Failed to build weekly trend HTML for newsletter #{weekly_trend['id']}"

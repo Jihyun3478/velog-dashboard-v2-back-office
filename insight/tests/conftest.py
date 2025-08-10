@@ -161,9 +161,9 @@ def sample_newsletter(user):
         email_message=EmailMessage(
             to=[user.email],
             from_email=settings.DEFAULT_FROM_EMAIL,
-            subject="Test Newsletter",
-            text_body="Test content",
-            html_body="<div>Test content</div>",
+            subject="벨로그 대시보드 주간 뉴스레터 #1",
+            text_body="Weekly Report Test content",
+            html_body="<div>Weekly Report<br/>Velog Dashboard<br/>활동 리포트<br/>대시보드 보러가기</div>",
         ),
     )
 
