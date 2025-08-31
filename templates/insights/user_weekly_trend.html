@@ -13,10 +13,14 @@
       letter-spacing: 0;
     "
   >
-    {% if user.username %} {{user.username}}님의 활동 리포트 {% else %} 활동
-    리포트 {% endif %}
+    {% if user.username %} 
+      {{user.username}}님의 활동 리포트 
+    {% else %} 
+      활동 리포트 
+    {% endif %}
   </h2>
-  {% endif %} {% if insight.user_weekly_stats %}
+  {% endif %} 
+  {% if insight.user_weekly_stats %}
   <div
     style="
       box-sizing: border-box;
@@ -38,7 +42,8 @@
       "
     >
       <!-- 새 글이 없을 경우 해당 내용만 제거하고 표시 -->
-      {% if insight.user_weekly_stats.new_posts > 0 %} 저번 주에는
+      {% if insight.user_weekly_stats.new_posts > 0 %}
+      저번 주에는
       <span
         style="
           box-sizing: border-box;
@@ -50,7 +55,8 @@
         {{insight.user_weekly_stats.new_posts}}개의 글
       </span>
       을 작성하셨네요!<br />
-      {% endif %} 👏 지난 한 주간
+      {% endif %} 
+      👏 지난 한 주간
       <span
         style="
           box-sizing: border-box;
@@ -61,7 +67,10 @@
       >
         {{insight.user_weekly_stats.views}}명
       </span>
-      이 {% if user.username %} {{user.username}}님의 {% endif %} 포스트를
+      이 
+      {% if user.username %} 
+        {{user.username}}님의
+      {% endif %} 포스트를
       읽었어요.<br />
       그리고
       <span
@@ -87,7 +96,8 @@
       </span>
     </p>
   </div>
-  {% endif %} {% if insight.user_weekly_reminder %}
+  {% endif %} 
+  {% if insight.user_weekly_reminder %}
   <div
     style="
       box-sizing: border-box;
@@ -124,10 +134,12 @@
         letter-spacing: 0;
       "
     >
-      {% if insight.user_weekly_reminder.title %} 지난번엔
-      "{{insight.user_weekly_reminder.title}}" (이)라는 제목의 글을
-      작성하셨네요!<br />
-      {% endif %} 다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
+      {% if insight.user_weekly_reminder.title %} 
+        지난번엔
+        "{{insight.user_weekly_reminder.title}}" (이)라는 제목의 글을
+        작성하셨네요!<br />
+      {% endif %} 
+      다음 주에 새로운 글을 발행하시면 저희가 분석해드려요.<br />
       다음주엔 꼭 분석해드리고 싶네요! 화이팅! 💪<br />
       <br />
       TIP:
@@ -192,7 +204,8 @@
     </p>
     {% endif %}
   </div>
-  {% endif %} {% if insight.trending_summary %}
+  {% endif %}
+  {% if insight.trending_summary %}
   <h3
     style="
       box-sizing: border-box;
@@ -346,7 +359,9 @@
       </tr>
     </table>
   </div>
-  {% endfor %} {% endif %} {% if insight.trend_analysis %}
+  {% endfor %} 
+  {% endif %} 
+  {% if insight.trend_analysis %}
   <div style="box-sizing: border-box; margin-top: 40px">
     <h3
       style="
@@ -387,7 +402,8 @@
     >
       {{ insight.trend_analysis.hot_keywords|join:", " }}
     </p>
-    {% endif %} {% if insight.trend_analysis.title_trends %}
+    {% endif %} 
+    {% if insight.trend_analysis.title_trends %}
     <h4
       style="
         box-sizing: border-box;
@@ -414,7 +430,8 @@
     >
       {{ insight.trend_analysis.title_trends }}
     </p>
-    {% endif %} {% if insight.trend_analysis.content_trends %}
+    {% endif %} 
+    {% if insight.trend_analysis.content_trends %}
     <h4
       style="
         box-sizing: border-box;
@@ -441,7 +458,8 @@
     >
       {{ insight.trend_analysis.content_trends }}
     </p>
-    {% endif %} {% if insight.trend_analysis.insights %}
+    {% endif %} 
+    {% if insight.trend_analysis.insights %}
     <h4
       style="
         box-sizing: border-box;
