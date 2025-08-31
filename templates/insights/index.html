@@ -130,10 +130,13 @@
                     box-sizing: border-box;
                   "
                 >
-                  {% if weekly_trend_html %} {{weekly_trend_html}} {% endif %}
+                  {% if weekly_trend_html %} 
+                    {{weekly_trend_html}} 
+                  {% endif %}
                   {% if not is_expired_token_user and user_weekly_trend_html %}
-                  {{user_weekly_trend_html}} {% endif %} {% if
-                  is_expired_token_user %}
+                    {{user_weekly_trend_html}} 
+                  {% endif %} 
+                  {% if is_expired_token_user %}
                   <!-- Token Expired Warning -->
                   <div style="margin-bottom: 40px; box-sizing: border-box">
                     <h2
@@ -146,8 +149,11 @@
                         box-sizing: border-box;
                       "
                     >
-                      {% if user.username %} {{user.username}}님의 활동 리포트
-                      {% else %} 활동 리포트 {% endif %}
+                      {% if user.username %} 
+                        {{user.username}}님의 활동 리포트
+                      {% else %} 
+                        활동 리포트 
+                      {% endif %}
                     </h2>
                     <div
                       style="
