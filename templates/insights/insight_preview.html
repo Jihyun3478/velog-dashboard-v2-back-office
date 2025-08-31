@@ -37,7 +37,13 @@
     {% endif %}
 
     {% if insight.trending_summary %}
-        <h2 style="box-sizing: border-box; margin-top: 20px;">{% if user %}작성 게시글 요약{% else %}트렌딩 요약{% endif %}</h2>
+        <h2 style="box-sizing: border-box; margin-top: 20px;">
+            {% if user %}
+                작성 게시글 요약
+            {% else %}
+                트렌딩 요약
+            {% endif %}
+        </h2>
         {% for item in insight.trending_summary %}
             <div style="box-sizing: border-box; margin: 15px 0; padding-left: 15px; border-left: 3px solid #ddd;">
                 <h3 style="box-sizing: border-box; margin-bottom: 5px;">{{ forloop.counter }}. {{ item.title }}</h3>
